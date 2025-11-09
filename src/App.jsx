@@ -296,25 +296,24 @@ const ReformaDoTemplo = () => {
             )}
 
             {activeTab === 'historico' && (
-              <div>
-                <h2 className="text-2xl font-bold mb-4">Histórico</h2>
-                {historicoDatas.length === 0 ? (
-                  <p className="text-center text-gray-500 py-8">Nenhum registro</p>
-                ) : (
-                  <div className="space-y-3">
-                    {historicoDatas.map(data => (
-                      <div
-                        key={data}
-                        onClick={() => { setSelectedDate(data); setActiveTab('corpo'); }}
-                        className="p-4 bg-white border rounded-lg cursor-pointer hover:shadow"
-                      >
-                        <p className="font-semibold">
-                          {new Date(data).toLocaleDateString('pt-BR', { weekday: 'short', day: 'numeric', month: 'short' })}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                )}
+  <div>
+    <h2 className="text-2xl font-bold mb-4">Histórico</h2>
+    {historicoDatas.length === 0 ? (
+      <p className="text-center text-gray-500 py-8">Nenhum registro</p>
+    ) : (
+      <div className="space-y-3">
+        {historicoDatas.map(data => (
+          <ListaHistorico
+            key={data}
+            data={data}
+            setSelectedDate={setSelectedDate}
+            setActiveTab={setActiveTab}
+          />
+        ))}
+      </div>
+    )}
+  </div>
+)}
               </div>
             )}
           </div>
@@ -327,5 +326,51 @@ const ReformaDoTemplo = () => {
     </div>
   );
 };
+// === COMPONENTE: ITEM DO HISTÓRICO COM MÉDIAS ===
+const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
+  const [medias, setMedias] = useState({ body: 0, spirit: 0, soul: 0 });
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    const load = async () => {
+      const get = (k) => localStorage.getItem(k + '-' + data);
+      const [b, s, a] = await Promise.all(['body', 'spirit', 'soul'].map(get));
+      
+      const calc = (val) => {
+        if (!val) return 0;
+        try {
+          const obj = JSON.parse(val);
+          const nums = Object.values(obj).filter(n => typeof n === 'number');
+          return nums.length ? (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(1) : 0;
+        } catch { return 0; }
+      };
+
+      setMedias({ body: calc(b), spirit: calc(s), soul: calc(a) });
+      setLoading(false);
+    };
+    load();
+  }, [data]);
+
+  return (
+    <div
+      onClick={() => { setSelectedDate(data); setActiveTab('corpo'); }}
+      className="p-4 bg-white border rounded-lg cursor-pointer hover:shadow transition-shadow"
+    >
+      <div className="flex justify-between items-center">
+        <p className="font-semibold text-gray-800">
+          {new Date(data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}
+        </p>
+        {loading ? (
+          <p className="text-xs text-gray-400">Carregando...</p>
+        ) : (
+          <div className="flex gap-3 text-sm font-bold">
+            <span className="text-green-600">C: {medias.body}</span>
+            <span className="text-purple-600">E: {medias.spirit}</span>
+            <span className="text-yellow-600">A: {medias.soul}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
 export default ReformaDoTemplo;
