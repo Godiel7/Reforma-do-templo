@@ -326,6 +326,7 @@ const ReformaDoTemplo = () => {
     </div>
   );
 };
+
 // === COMPONENTE: ITEM DO HISTÓRICO COM MÉDIAS ===
 const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
   const [medias, setMedias] = useState({ body: 0, spirit: 0, soul: 0 });
@@ -373,4 +374,5 @@ const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
     </div>
   );
 };
+
 export default ReformaDoTemplo;
