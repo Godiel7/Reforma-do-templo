@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, ScrollText } from 'lucide-react';
+import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, Scroll } from 'lucide-react';
 
 const ReformaDoTemplo = () => {
   const [activeTab, setActiveTab] = useState('rotina');
