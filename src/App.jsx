@@ -219,7 +219,7 @@ const ReformaDoTemplo = () => {
               { id: 'corpo', icon: Heart, label: 'Corpo' },
               { id: 'espirito', icon: Sparkles, label: 'Espírito' },
               { id: 'alma', icon: Brain, label: 'Alma' },
-              { id: 'decisao', icon: ScrollText, label: 'Decisão' },
+              { id: 'decisao', icon: Scroll, label: 'Decisão' },
               { id: 'historico', label: 'Histórico' }
             ].map(tab => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-6 py-4 font-medium ${activeTab === tab.id ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}>
