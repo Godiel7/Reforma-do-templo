@@ -296,24 +296,22 @@ const ReformaDoTemplo = () => {
             )}
 
             {activeTab === 'historico' && (
-  <div>
-    <h2 className="text-2xl font-bold mb-4">Histórico</h2>
-    {historicoDatas.length === 0 ? (
-      <p className="text-center text-gray-500 py-8">Nenhum registro</p>
-    ) : (
-      <div className="space-y-3">
-        {historicoDatas.map(data => (
-          <ListaHistorico
-            key={data}
-            data={data}
-            setSelectedDate={setSelectedDate}
-            setActiveTab={setActiveTab}
-          />
-        ))}
-      </div>
-    )}
-  </div>
-)}
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Histórico</h2>
+                {historicoDatas.length === 0 ? (
+                  <p className="text-center text-gray-500 py-8">Nenhum registro</p>
+                ) : (
+                  <div className="space-y-3">
+                    {historicoDatas.map(data => (
+                      <ListaHistorico
+                        key={data}
+                        data={data}
+                        setSelectedDate={setSelectedDate}
+                        setActiveTab={setActiveTab}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             )}
           </div>
