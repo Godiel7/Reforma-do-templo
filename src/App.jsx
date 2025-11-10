@@ -1,36 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, Scroll } from 'lucide-react';
-
-class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null };
-  }
-
-  static getDerivedStateFromError(error) {
-    return { hasError: true, error };
-  }
-
-  componentDidCatch(error, errorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="p-6 text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Algo deu errado!</h2>
-          <p className="text-gray-600 mb-2">Erro: {this.state.error?.message}</p>
-          <button onClick={() => window.location.reload()} className="bg-blue-600 text-white px-4 py-2 rounded">
-            Recarregar App
-          </button>
-        </div>
-      );
-    }
-
-    return this.props.children;
-  }
-}
+import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const ReformaDoTemplo = () => {
   const [activeTab, setActiveTab] = useState('rotina');
@@ -79,16 +48,6 @@ const ReformaDoTemplo = () => {
     raiva: 5,
     tristeza: 5,
     tédio: 5
-  });
-
-  const [decisionData, setDecisionData] = useState({
-    description: '',
-    alinhamento: [false, false, false, false],
-    mordomia: [false, false, false, false, false],
-    generosidade: [false, false, false],
-    testemunho: [false, false, false],
-    eternidade: [false, false, false],
-    anotações: ['', '', '', '', '']
   });
 
   const storage = {
@@ -161,36 +120,6 @@ const ReformaDoTemplo = () => {
     }
   };
 
-  const salvarDecisão = async () => {
-    if (!decisionData.description.trim()) {
-      showToast('Descreva a decisão', 'error');
-      return;
-    }
-
-    const nova = {
-      id: Date.now(),
-      data: selectedDate,
-      dataHora: new Date().toISOString(),
-      ...decisionData
-    };
-
-    const lista = [nova, ...decisoesSalvas];
-    await storage.set('decisoes-lista', JSON.stringify(lista));
-    setDecisoesSalvas(lista);
-
-    setDecisionData({
-      description: '',
-      alinhamento: [false, false, false, false],
-      mordomia: [false, false, false, false, false],
-      generosidade: [false, false, false],
-      testemunho: [false, false, false],
-      eternidade: [false, false, false],
-      anotações: ['', '', '', '', '']
-  });
-
-  showToast('Decisão salva!', 'success');
-  };
-
   const changeDate = (days) => {
     const d = new Date(selectedDate);
     d.setDate(d.getDate() + days);
@@ -231,220 +160,141 @@ const ReformaDoTemplo = () => {
   };
 
   return (
-    <ErrorBoundary>
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
-        {toast && (
-          <div className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white shadow-lg z-50 animate-pulse
-            ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
-            {toast.msg}
-          </div>
-        )}
-
-        <div className="max-w-4xl mx-auto">
-          <header className="text-center mb-8 pt-6">
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">Reforma do Templo</h1>
-            <p className="text-gray-600 italic">Apresenteis o vosso corpo em sacrifício vivo - Romanos 12:1</p>
-          </header>
-
-          <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
-            <div className="flex items-center justify-between">
-              <button onClick={() => changeDate(-1)} className="p-2 hover:bg-gray-100 rounded-lg">
-                <ChevronLeft size={24} />
-              </button>
-              <div className="text-center flex-1">
-                <input
-                  type="date"
-                  value={selectedDate}
-                  onChange={e => setSelectedDate(e.target.value)}
-                  className="text-lg font-semibold border-none bg-transparent"
-                />
-                <p className="text-sm text-gray-600">{formatDate(selectedDate)}</p>
-              </div>
-              <button onClick={() => changeDate(1)} className="p-2 hover:bg-gray-100 rounded-lg">
-                <ChevronRight size={24} />
-              </button>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow-lg mb-6">
-            <div className="flex border-b overflow-x-auto">
-              {[
-                { id: 'rotina', icon: Calendar, label: 'Rotina' },
-                { id: 'corpo', icon: Heart, label: 'Corpo' },
-                { id: 'espirito', icon: Sparkles, label: 'Espírito' },
-                { id: 'alma', icon: Brain, label: 'Alma' },
-                { id: 'decisao', icon: Scroll, label: 'Decisão' },
-                { id: 'historico', label: 'Histórico' }
-              ].map(tab => (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-6 py-4 font-medium ${
-                    activeTab === tab.id ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500 hover:text-gray-700'
-                  }`}
-                >
-                  {tab.icon && <tab.icon size={20} />}
-                  {tab.label}
-                </button>
-              ))}
-            </div>
-
-            <div className="p-6">
-              {/* ABA ROTINA */}
-              {activeTab === 'rotina' && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-4">Rotina Diária</h2>
-                  <div className="mb-6 p-4 bg-blue-50 rounded-lg">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-                      <input
-                        type="time"
-                        value={newRoutine.hora}
-                        onChange={e => setNewRoutine({ ...newRoutine, hora: e.target.value })}
-                        className="px-3 py-2 border rounded"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Atividade"
-                        value={newRoutine.atividade}
-                        onChange={e => setNewRoutine({ ...newRoutine, atividade: e.target.value })}
-                        className="px-3 py-2 border rounded"
-                      />
-                      <select
-                        value={newRoutine.tipo}
-                        onChange={e => setNewRoutine({ ...newRoutine, tipo: e.target.value })}
-                        className="px-3 py-2 border rounded"
-                      >
-                        {Object.keys(tipoColors).map(t => (
-                          <option key={t} value={t}>{t}</option>
-                        ))}
-                      </select>
-                      <button
-                        onClick={addRoutineItem}
-                        className="bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center gap-2"
-                      >
-                        <Plus size={20} />
-                        Adicionar
-                      </button>
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    {routineItems.map(item => (
-                      <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                        <input
-                          type="checkbox"
-                          checked={item.concluída}
-                          onChange={() => toggleRoutineItem(item.id)}
-                          className="w-5 h-5"
-                        />
-                        <span className="font-mono text-sm w-16">{item.hora}</span>
-                        <span className={item.concluída ? 'line-through text-gray-500 flex-1' : 'flex-1'}>
-                          {item.atividade}
-                        </span>
-                        <span className={'px-2 py-1 rounded text-xs ' + tipoColors[item.tipo]}>
-                          {item.tipo}
-                        </span>
-                        <button onClick={() => removeRoutineItem(item.id)} className="text-red-500 text-sm">
-                          Remover
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ABA CORPO / ESPÍRITO / ALMA */}
-              {['corpo', 'espirito', 'alma'].includes(activeTab) && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-4">
-                    {activeTab === 'corpo' ? 'Corpo' : activeTab === 'espirito' ? 'Espírito' : 'Alma'}
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(
-                      activeTab === 'corpo' ? bodyMetrics : activeTab === 'espirito' ? spiritMetrics : soulMetrics
-                    ).map(([key, value]) => (
-                      <div key={key} className="mb-4">
-                        <div className="flex justify-between mb-1">
-                          <label className="text-sm font-medium capitalize">
-                            {key.replace(/([A-Z])/g, ' $1').trim()}
-                          </label>
-                          <span className="text-sm font-bold text-blue-600">{value}</span>
-                        </div>
-                        <input
-                          type="range"
-                          min="1"
-                          max="10"
-                          value={value}
-                          onChange={e => {
-                            const setter = activeTab === 'corpo' ? setBodyMetrics : activeTab === 'espirito' ? setSpiritMetrics : setSoulMetrics;
-                            const metrics = activeTab === 'corpo' ? bodyMetrics : activeTab === 'espirito' ? spiritMetrics : soulMetrics;
-                            setter({ ...metrics, [key]: +e.target.value });
-                          }}
-                          className="w-full h-2 rounded"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ABA DECISÃO - VERSÃO SIMPLES */}
-              {activeTab === 'decisao' && (
-                <div className="p-6">
-                  <h2 className="text-2xl font-bold mb-4 text-blue-600">Guia de Decisão Cristã</h2>
-                  <p className="text-gray-600 mb-6">
-                    Preencha a descrição da decisão e clique em salvar.
-                  </p>
-
-                  <textarea
-                    value={decisionData.description}
-                    onChange={e => setDecisionData({ ...decisionData, description: e.target.value })}
-                    placeholder="Ex: Comprar um celular novo, aceitar um convite, começar um hábito..."
-                    className="w-full p-3 border rounded-lg resize-none h-24 mb-6"
-                  />
-
-                  <button
-                    onClick={salvarDecisão}
-                    className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors"
-                  >
-                    <Save size={20} />
-                    Salvar Decisão
-                  </button>
-                </div>
-              )}
-
-              {/* ABA HISTÓRICO */}
-              {activeTab === 'historico' && (
-                <div>
-                  <h2 className="text-2xl font-bold mb-4">Histórico</h2>
-                  {historicoDatas.length === 0 ? (
-                    <p className="text-center text-gray-500 py-8">Nenhum registro</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {historicoDatas.map(data => (
-                        <div
-                          key={data}
-                          onClick={() => { setSelectedDate(data); setActiveTab('corpo'); }}
-                          className="p-4 bg-white border rounded-lg cursor-pointer hover:shadow-md transition-shadow"
-                        >
-                          <p className="font-semibold">
-                            {new Date(data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}
-                          </p>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-          </div>
-
-          <button onClick={saveData} className="bg-green-600 text-white px-8 py-3 rounded flex items-center gap-2 mx-auto shadow-lg hover:bg-green-700 transition-colors">
-            <Save size={20} />
-            Salvar Progresso
-          </button>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+      {toast && (
+        <div className={`fixed bottom-4 right-4 px-6 py-3 rounded-lg text-white shadow-lg z-50 animate-pulse
+          ${toast.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}>
+          {toast.msg}
         </div>
+      )}
+
+      <div className="max-w-4xl mx-auto">
+        <header className="text-center mb-8 pt-6">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">Reforma do Templo</h1>
+          <p className="text-gray-600 italic">Apresenteis o vosso corpo em sacrifício vivo - Romanos 12:1</p>
+        </header>
+
+        <div className="bg-white rounded-lg shadow-lg p-4 mb-6">
+          <div className="flex items-center justify-between">
+            <button onClick={() => changeDate(-1)} className="p-2 hover:bg-gray-100 rounded-lg"><ChevronLeft size={24} /></button>
+            <div className="text-center flex-1">
+              <input type="date" value={selectedDate} onChange={e => setSelectedDate(e.target.value)} className="text-lg font-semibold border-none bg-transparent" />
+              <p className="text-sm text-gray-600">{formatDate(selectedDate)}</p>
+            </div>
+            <button onClick={() => changeDate(1)} className="p-2 hover:bg-gray-100 rounded-lg"><ChevronRight size={24} /></button>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-lg mb-6">
+          <div className="flex border-b overflow-x-auto">
+            {[
+              { id: 'rotina', icon: Calendar, label: 'Rotina' },
+              { id: 'corpo', icon: Heart, label: 'Corpo' },
+              { id: 'espirito', icon: Sparkles, label: 'Espírito' },
+              { id: 'alma', icon: Brain, label: 'Alma' },
+              { id: 'historico', label: 'Histórico' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-4 font-medium ${activeTab === tab.id ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
+              >
+                {tab.icon && <tab.icon size={20} />} {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="p-6">
+            {/* ABA ROTINA */}
+            {activeTab === 'rotina' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Rotina Diária</h2>
+                <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input type="time" value={newRoutine.hora} onChange={e => setNewRoutine({...newRoutine, hora: e.target.value})} className="px-3 py-2 border rounded" />
+                    <input type="text" placeholder="Atividade" value={newRoutine.atividade} onChange={e => setNewRoutine({...newRoutine, atividade: e.target.value})} className="px-3 py-2 border rounded" />
+                    <select value={newRoutine.tipo} onChange={e => setNewRoutine({...newRoutine, tipo: e.target.value})} className="px-3 py-2 border rounded">
+                      {Object.keys(tipoColors).map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                    <button onClick={addRoutineItem} className="bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center gap-2"><Plus size={20} />Adicionar</button>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  {routineItems.map(item => (
+                    <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                      <input type="checkbox" checked={item.concluída} onChange={() => toggleRoutineItem(item.id)} className="w-5 h-5" />
+                      <span className="font-mono text-sm w-16">{item.hora}</span>
+                      <span className={item.concluída ? 'line-through text-gray-500 flex-1' : 'flex-1'}>{item.atividade}</span>
+                      <span className={'px-2 py-1 rounded text-xs ' + tipoColors[item.tipo]}>{item.tipo}</span>
+                      <button onClick={() => removeRoutineItem(item.id)} className="text-red-500 text-sm">Remover</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ABA CORPO / ESPÍRITO / ALMA */}
+            {['corpo', 'espirito', 'alma'].includes(activeTab) && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">
+                  {activeTab === 'corpo' ? 'Corpo' : activeTab === 'espirito' ? 'Espírito' : 'Alma'}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Object.entries(activeTab === 'corpo' ? bodyMetrics : activeTab === 'espirito' ? spiritMetrics : soulMetrics).map(([key, value]) => (
+                    <div key={key} className="mb-4">
+                      <div className="flex justify-between mb-1">
+                        <label className="text-sm font-medium capitalize">{key.replace(/([A-Z])/g, ' $1').trim()}</label>
+                        <span className="text-sm font-bold text-blue-600">{value}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        value={value}
+                        onChange={e => {
+                          const setter = activeTab === 'corpo' ? setBodyMetrics : activeTab === 'espirito' ? setSpiritMetrics : setSoulMetrics;
+                          const metrics = activeTab === 'corpo' ? bodyMetrics : activeTab === 'espirito' ? spiritMetrics : soulMetrics;
+                          setter({...metrics, [key]: +e.target.value});
+                        }}
+                        className="w-full h-2 rounded"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ABA HISTÓRICO */}
+            {activeTab === 'historico' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Histórico</h2>
+                {historicoDatas.length === 0 ? (
+                  <p className="text-center text-gray-500 py-8">Nenhum registro</p>
+                ) : (
+                  <div className="space-y-3">
+                    {historicoDatas.map(data => (
+                      <div
+                        key={data}
+                        onClick={() => { setSelectedDate(data); setActiveTab('corpo'); }}
+                        className="p-4 bg-white border rounded-lg cursor-pointer hover:shadow transition-shadow"
+                      >
+                        <p className="font-semibold text-gray-800">
+                          {new Date(data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <button onClick={saveData} className="bg-green-600 text-white px-8 py-3 rounded flex items-center gap-2 mx-auto shadow-lg">
+          <Save size={20} /> Salvar Progresso
+        </button>
       </div>
-    </ErrorBoundary>
+    </div>
   );
 };
 
