@@ -77,7 +77,7 @@ const GuiaDecisao = ({ decisionData, setDecisionData, salvarDecisao }) => {
         <textarea
           value={decisionData.description}
           onChange={e => setDecisionData({ ...decisionData, description: e.target.value })}
-          placeholder="Ex: Comprar um celular novo..."
+          placeholder="Ex: Comprar um celular novo, aceitar um convite..."
           className="w-full p-3 border rounded-lg resize-none h-24"
         />
       </div>
@@ -88,3 +88,9 @@ const GuiaDecisao = ({ decisionData, setDecisionData, salvarDecisao }) => {
           <div className="space-y-2">
             {section.items.map((item, idx) => (
               <label key={idx} className="flex items-center gap-3 cursor-pointer select-none">
+                {decisionData[section.category][idx] ? (
+                  <CheckSquare size={20} className="text-green-600" />
+                ) : (
+                  <Square size={18} className="text-gray-400" />
+                )}
+                <input
