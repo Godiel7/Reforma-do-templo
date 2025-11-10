@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, Scroll } from 'lucide-react';
-import GuiaDecisao from './components/GuiaDecisao';
 
 const ReformaDoTemplo = () => {
   const [activeTab, setActiveTab] = useState('rotina');
@@ -247,13 +246,18 @@ const ReformaDoTemplo = () => {
               { id: 'decisao', icon: Scroll, label: 'Decisão' },
               { id: 'historico', label: 'Histórico' }
             ].map(tab => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)} className={`flex items-center gap-2 px-6 py-4 font-medium ${activeTab === tab.id ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}>
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-2 px-6 py-4 font-medium ${activeTab === tab.id ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
+              >
                 {tab.icon && <tab.icon size={20} />} {tab.label}
               </button>
             ))}
           </div>
 
           <div className="p-6">
+            {/* ABA ROTINA */}
             {activeTab === 'rotina' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4">Rotina Diária</h2>
@@ -281,6 +285,7 @@ const ReformaDoTemplo = () => {
               </div>
             )}
 
+            {/* ABA CORPO / ESPÍRITO / ALMA */}
             {['corpo', 'espirito', 'alma'].includes(activeTab) && (
               <div>
                 <h2 className="text-2xl font-bold mb-4">
@@ -311,30 +316,32 @@ const ReformaDoTemplo = () => {
               </div>
             )}
 
+            {/* ABA DECISÃO - VERSÃO SIMPLES PARA TESTE */}
             {activeTab === 'decisao' && (
-  <div className="p-6">
-    <h2 className="text-2xl font-bold mb-4 text-blue-600">Guia de Decisão Cristã</h2>
-    <p className="text-gray-600 mb-4">TESTE: A aba está funcionando!</p>
-    
-    <textarea
-      value={decisionData.description}
-      onChange={(e) => setDecisionData({ ...decisionData, description: e.target.value })}
-      placeholder="Digite aqui a descrição da decisão..."
-      className="w-full p-3 border rounded-lg h-24 mb-4"
-    />
-    
-    <button
-      onClick={salvarDecisao}
-      className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"
-    >
-      Salvar Decisão
-    </button>
-    
-    <p className="text-sm text-gray-500 mt-4">Se você vê isso, a aba funciona 100%.</p>
-  </div>
-)}
+              <div className="p-6 bg-white rounded-lg">
+                <h2 className="text-2xl font-bold mb-4 text-blue-600 flex items-center gap-2">
+                  <Scroll size={28} /> Guia de Decisão Cristã
+                </h2>
+                <p className="text-green-600 font-bold mb-4">TESTE: A aba está funcionando!</p>
+
+                <label className="block text-sm font-medium mb-2">Descreva a decisão:</label>
+                <textarea
+                  value={decisionData.description}
+                  onChange={e => setDecisionData({ ...decisionData, description: e.target.value })}
+                  placeholder="Ex: Comprar um celular novo, aceitar um convite..."
+                  className="w-full p-3 border rounded-lg resize-none h-24 mb-4"
+                />
+
+                <button
+                  onClick={salvarDecisão}
+                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
+                >
+                  Salvar Decisão
+                </button>
+              </div>
             )}
 
+            {/* ABA HISTÓRICO */}
             {activeTab === 'historico' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4">Histórico</h2>
