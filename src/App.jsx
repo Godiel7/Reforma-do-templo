@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, Scroll } from 'lucide-react';
+import GuiaDecisao from './components/GuiaDecisao';
 
 const ReformaDoTemplo = () => {
   const [activeTab, setActiveTab] = useState('rotina');
@@ -50,6 +51,18 @@ const ReformaDoTemplo = () => {
     tédio: 5
   });
 
+  const [decisionData, setDecisionData] = useState({
+    description: '',
+    alinhamento: [false, false, false, false],
+    mordomia: [false, false, false, false, false],
+    generosidade: [false, false, false],
+    testemunho: [false, false, false],
+    eternidade: [false, false, false],
+    anotações: ['', '', '', '', '']
+  });
+
+  const [decisoesSalvas, setDecisoesSalvas] = useState([]);
+
   const storage = {
     async get(key) {
       const item = localStorage.getItem(key);
@@ -66,7 +79,17 @@ const ReformaDoTemplo = () => {
 
   useEffect(() => {
     carregarHistórico();
+    carregarDecisoesSalvas();
   }, []);
+
+  const carregarDecisoesSalvas = async () => {
+    try {
+      const result = await storage.get('decisoes-lista');
+      if (result && result.value) {
+        setDecisoesSalvas(JSON.parse(result.value));
+      }
+    } catch (e) {}
+  };
 
   const carregarHistórico = async () => {
     try {
@@ -118,6 +141,36 @@ const ReformaDoTemplo = () => {
     } catch (e) {
       showToast('Erro ao salvar', 'error');
     }
+  };
+
+  const salvarDecisão = async () => {
+    if (!decisionData.description.trim()) {
+      showToast('Descreva a decisão', 'error');
+      return;
+    }
+
+    const nova = {
+      id: Date.now(),
+      data: selectedDate,
+      dataHora: new Date().toISOString(),
+      ...decisionData
+    };
+
+    const lista = [nova, ...decisoesSalvas];
+    await storage.set('decisoes-lista', JSON.stringify(lista));
+    setDecisoesSalvas(lista);
+
+    setDecisionData({
+      description: '',
+      alinhamento: [false, false, false, false],
+      mordomia: [false, false, false, false, false],
+      generosidade: [false, false, false],
+      testemunho: [false, false, false],
+      eternidade: [false, false, false],
+      anotações: ['', '', '', '', '']
+    });
+
+    showToast('Decisão salva!', 'success');
   };
 
   const changeDate = (days) => {
@@ -192,6 +245,7 @@ const ReformaDoTemplo = () => {
               { id: 'corpo', icon: Heart, label: 'Corpo' },
               { id: 'espirito', icon: Sparkles, label: 'Espírito' },
               { id: 'alma', icon: Brain, label: 'Alma' },
+              { id: 'decisao', icon: Scroll, label: 'Decisão' },
               { id: 'historico', label: 'Histórico' }
             ].map(tab => (
               <button
@@ -262,6 +316,15 @@ const ReformaDoTemplo = () => {
                   ))}
                 </div>
               </div>
+            )}
+
+            {/* ABA DECISÃO */}
+            {activeTab === 'decisao' && (
+              <GuiaDecisao
+                decisionData={decisionData}
+                setDecisionData={setDecisionData}
+                salvarDecisao={salvarDecisão}
+              />
             )}
 
             {/* ABA HISTÓRICO */}
