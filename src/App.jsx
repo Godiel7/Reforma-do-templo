@@ -156,7 +156,7 @@ const ReformaDoTemplo = () => {
       ...decisionData
     };
 
-    const lista = [nova, ...dec:decisoesSalvas];
+    const lista = [nova, ...decisoesSalvas];
     await storage.set('decisoes-lista', JSON.stringify(lista));
     setDecisoesSalvas(lista);
 
@@ -207,7 +207,7 @@ const ReformaDoTemplo = () => {
     físico: 'bg-green-100 text-green-800',
     trabalho: 'bg-blue-100 text-blue-800',
     estudo: 'bg-yellow-100 text-yellow-800',
-    alimentação: 'bg-orange-1 00 text-orange-800',
+    alimentação: 'bg-orange-100 text-orange-800',
     entretenimento: 'bg-pink-100 text-pink-800',
     outro: 'bg-gray-100 text-gray-800'
   };
@@ -326,7 +326,7 @@ const ReformaDoTemplo = () => {
             )}
 
             {activeTab === 'decisoes' && (
-              <div className="space-4">
+              <div className="space-y-4">
                 <h2 className="text-2xl font-bold mb-4">Decisões Salvas</h2>
                 {decisoesSalvas.length === 0 ? (
                   <p className="text-center text-gray-500 py-8">Nenhuma decisão salva ainda.</p>
@@ -378,7 +378,7 @@ const ReformaDoTemplo = () => {
   );
 };
 
-// === COMPONENTE HISTÓRICO COM MÉDIAS (CORRIGIDO) ===
+// === COMPONENTE HISTÓRICO COM MÉDIAS ===
 const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
   const [medias, setMedias] = useState({ body: 0, spirit: 0, soul: 0 });
   const [loading, setLoading] = useState(true);
