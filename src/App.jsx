@@ -312,11 +312,27 @@ const ReformaDoTemplo = () => {
             )}
 
             {activeTab === 'decisao' && (
-              <GuiaDecisao
-                decisionData={decisionData}
-                setDecisionData={setDecisionData}
-                salvarDecisão={salvarDecisão}
-              />
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-4 text-blue-600">Guia de Decisão Cristã</h2>
+    <p className="text-gray-600 mb-4">TESTE: A aba está funcionando!</p>
+    
+    <textarea
+      value={decisionData.description}
+      onChange={(e) => setDecisionData({ ...decisionData, description: e.target.value })}
+      placeholder="Digite aqui a descrição da decisão..."
+      className="w-full p-3 border rounded-lg h-24 mb-4"
+    />
+    
+    <button
+      onClick={salvarDecisao}
+      className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold"
+    >
+      Salvar Decisão
+    </button>
+    
+    <p className="text-sm text-gray-500 mt-4">Se você vê isso, a aba funciona 100%.</p>
+  </div>
+)}
             )}
 
             {activeTab === 'historico' && (
