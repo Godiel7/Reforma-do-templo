@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, Scroll } from 'lucide-react';
+import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, Scroll, DollarSign } from 'lucide-react';
 import GuiaDecisaoCompleto from './components/GuiaDecisaoCompleto';
 
 const ReformaDoTemplo = () => {
@@ -7,52 +7,26 @@ const ReformaDoTemplo = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [routineItems, setRoutineItems] = useState([]);
   const [newRoutine, setNewRoutine] = useState({ hora: '', atividade: '', tipo: 'devocional' });
-  const [historicoDatas, setHistoricoDatas] = useState([]);
+gaan  const [historicoDatas, setHistoricoDatas] = useState([]);
   const [toast, setToast] = useState(null);
 
   const [bodyMetrics, setBodyMetrics] = useState({
-    energia: 5,
-    qualidadeSono: 5,
-    alimentação: 5,
-    hidratação: 5,
-    frequênciaExercícios: 5,
-    cumprimentoRotina: 5,
-    resistênciaFadiga: 5,
-    força: 5,
-    flexibilidade: 5,
-    coordenação: 5,
-    percepção: 5,
-    resistênciaExcessos: 5,
-    persistência: 5,
-    capacidadeDizerNão: 5
+    energia: 5, qualidadeSono: 5, alimentação: 5, hidratação: 5, frequênciaExercícios: 5,
+    cumprimentoRotina: 5, resistênciaFadiga: 5, força: 5, flexibilidade: 5, coordenação: 5,
+    percepção: 5, resistênciaExcessos: 5, persistência: 5, capacidadeDizerNão: 5
   });
 
   const [spiritMetrics, setSpiritMetrics] = useState({
-    amor: 5,
-    alegria: 5,
-    paz: 5,
-    paciência: 5,
-    fidelidade: 5,
-    mansidão: 5,
-    bondade: 5,
-    benignidade: 5,
-    domínioPróprio: 5
+    amor: 5, alegria: 5, paz: 5, paciência: 5, fidelidade: 5, mansidão: 5, bondade: 5, benignidade: 5, domínioPróprio: 5
   });
 
   const [soulMetrics, setSoulMetrics] = useState({
-    alegria: 5,
-    esperança: 5,
-    confiança: 5,
-    serenidade: 5,
-    ansiedade: 5,
-    medo: 5,
-    raiva: 5,
-    tristeza: 5,
-    tédio: 5
+    alegria: 5, esperança: 5, confiança: 5, serenidade: 5, ansiedade: 5, medo: 5, raiva: 5, tristeza: 5, tédio: 5
   });
 
   const [decisionData, setDecisionData] = useState({
     description: '',
+    valor: '',
     alinhamento: [false, false, false, false],
     mordomia: [false, false, false, false, false],
     generosidade: [false, false, false],
@@ -62,6 +36,10 @@ const ReformaDoTemplo = () => {
   });
 
   const [decisoesSalvas, setDecisoesSalvas] = useState([]);
+
+  // === FINANÇAS ===
+  const [transacoes, setTransacoes] = useState([]);
+  const [novaTransacao, setNovaTransacao] = useState({ nome: '', valor: '', tipo: 'saída' });
 
   const storage = {
     async get(key) {
@@ -80,18 +58,21 @@ const ReformaDoTemplo = () => {
   useEffect(() => {
     carregarHistórico();
     carregarDecisoesSalvas();
+    carregarTransacoes();
   }, []);
 
   const carregarDecisoesSalvas = async () => {
     try {
       const result = await storage.get('decisoes-lista');
-      if (result && result.value) {
-        const lista = JSON.parse(result.value);
-        setDecisoesSalvas(lista);
-      }
-    } catch (e) {
-      console.error('Erro ao carregar decisões:', e);
-    }
+      if (result && result.value) setDecisoesSalvas(JSON.parse(result.value));
+    } catch (e) {}
+  };
+
+  const carregarTransacoes = async () => {
+    try {
+      const result = await storage.get('transacoes-financeiras');
+      if (result && result.value) setTransacoes(JSON.parse(result.value));
+    } catch (e) {}
   };
 
   const carregarHistórico = async () => {
@@ -165,6 +146,7 @@ const ReformaDoTemplo = () => {
 
     setDecisionData({
       description: '',
+      valor: '',
       alinhamento: [false, false, false, false],
       mordomia: [false, false, false, false, false],
       generosidade: [false, false, false],
@@ -175,6 +157,36 @@ const ReformaDoTemplo = () => {
 
     showToast('Decisão salva!', 'success');
   };
+
+  const adicionarTransacao = async () => {
+    if (!novaTransacao.nome || !novaTransacao.valor) {
+      showToast('Preencha nome e valor', 'error');
+      return;
+    }
+
+    const valorNum = parseFloat(novaTransacao.valor.replace(',', '.'));
+    if (isNaN(valorNum) || valorNum <= 0) {
+      showToast('Valor inválido', 'error');
+      return;
+    }
+
+    const transacao = {
+      id: Date.now(),
+      data: new Date().toISOString(),
+      ...novaTransacao,
+      valor: valorNum
+    };
+
+    const lista = [transacao, ...transacoes];
+    await storage.set('transacoes-financeiras', JSON.stringify(lista));
+    setTransacoes(lista);
+    setNovaTransacao({ nome: '', valor: '', tipo: 'saída' });
+    showToast('Transação adicionada!', 'success');
+  };
+
+  const saldoAtual = transacoes.reduce((acc, t) => {
+    return t.tipo === 'entrada' ? acc + t.valor : acc - t.valor;
+  }, 0);
 
   const changeDate = (days) => {
     const d = new Date(selectedDate);
@@ -215,10 +227,9 @@ const ReformaDoTemplo = () => {
     outro: 'bg-gray-100 text-gray-800'
   };
 
-  // === INTERPRETAÇÃO DAS RESPOSTAS ===
   const interpretacao = (dec) => {
     const totalSim = Object.values(dec).reduce((acc, v) => acc + (Array.isArray(v) ? v.filter(Boolean).length : 0), 0);
-    const totalPerguntas = 20; // 4 + 5 + 3 + 3 + 3 + 2 anotações
+    const totalPerguntas = 20;
 
     const naoImportante = [
       ...dec.alinhamento.slice(0, 3),
@@ -269,6 +280,7 @@ const ReformaDoTemplo = () => {
               { id: 'alma', icon: Brain, label: 'Alma' },
               { id: 'decisao', icon: Scroll, label: 'Decisão' },
               { id: 'decisoes', label: 'Decisões Salvas' },
+              { id: 'financas', icon: DollarSign, label: 'Finanças' },
               { id: 'historico', label: 'Histórico' }
             ].map(tab => (
               <button
@@ -345,11 +357,23 @@ const ReformaDoTemplo = () => {
             )}
 
             {activeTab === 'decisao' && (
-              <GuiaDecisaoCompleto
-                decisionData={decisionData}
-                setDecisionData={setDecisionData}
-                salvarDecisao={salvarDecisao}
-              />
+              <div>
+                <GuiaDecisaoCompleto
+                  decisionData={decisionData}
+                  setDecisionData={setDecisionData}
+                  salvarDecisao={salvarDecisao}
+                />
+                <div className="mt-4">
+                  <label className="block text-sm font-medium mb-1">Valor do Gasto (R$):</label>
+                  <input
+                    type="text"
+                    value={decisionData.valor}
+                    onChange={e => setDecisionData({...decisionData, valor: e.target.value})}
+                    placeholder="Ex: 150,00"
+                    className="w-full p-3 border rounded-lg text-sm"
+                  />
+                </div>
+              </div>
             )}
 
             {activeTab === 'decisoes' && (
@@ -364,7 +388,10 @@ const ReformaDoTemplo = () => {
                       return (
                         <div key={dec.id} className="bg-white p-5 rounded-lg shadow-md border">
                           <div className="flex justify-between items-start mb-2">
-                            <p className="font-bold text-lg text-gray-800">{dec.description}</p>
+                            <div>
+                              <p className="font-bold text-lg text-gray-800">{dec.description}</p>
+                              {dec.valor && <p className="text-sm text-green-600 font-semibold">R$ {dec.valor}</p>}
+                            </div>
                             <span className="text-xs text-gray-500">
                               {new Date(dec.dataHora).toLocaleString('pt-BR')}
                             </span>
@@ -381,7 +408,6 @@ const ReformaDoTemplo = () => {
                                 ))}
                               </ul>
                             </div>
-
                             <div>
                               <p className="font-semibold text-blue-700">Mordomia ({dec.mordomia.filter(Boolean).length}/5)</p>
                               <ul className="list-disc list-inside text-gray-600">
@@ -392,7 +418,6 @@ const ReformaDoTemplo = () => {
                                 ))}
                               </ul>
                             </div>
-
                             <div>
                               <p className="font-semibold text-purple-700">Generosidade ({dec.generosidade.filter(Boolean).length}/3)</p>
                               <ul className="list-disc list-inside text-gray-600">
@@ -403,7 +428,6 @@ const ReformaDoTemplo = () => {
                                 ))}
                               </ul>
                             </div>
-
                             <div>
                               <p className="font-semibold text-orange-700">Testemunho ({dec.testemunho.filter(Boolean).length}/3)</p>
                               <ul className="list-disc list-inside text-gray-600">
@@ -414,7 +438,6 @@ const ReformaDoTemplo = () => {
                                 ))}
                               </ul>
                             </div>
-
                             <div>
                               <p className="font-semibold text-yellow-700">Eternidade ({dec.eternidade.filter(Boolean).length}/3)</p>
                               <ul className="list-disc list-inside text-gray-600">
@@ -448,6 +471,76 @@ const ReformaDoTemplo = () => {
               </div>
             )}
 
+            {activeTab === 'financas' && (
+              <div>
+                <h2 className="text-2xl font-bold mb-4">Controle Financeiro</h2>
+
+                <div className="bg-green-50 p-4 rounded-lg mb-6">
+                  <p className="text-lg font-bold text-green-700">
+                    Saldo Atual: R$ {saldoAtual.toFixed(2).replace('.', ',')}
+                  </p>
+                </div>
+
+                <div className="mb-6 p-4 bg-blue-50 rounded-lg">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    <input
+                      type="text"
+                      placeholder="Nome (ex: Salário)"
+                      value={novaTransacao.nome}
+                      onChange={e => setNovaTransacao({...novaTransacao, nome: e.target.value})}
+                      className="px-3 py-2 border rounded"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Valor (ex: 1500,00)"
+                      value={novaTransacao.valor}
+                      onChange={e => setNovaTransacao({...novaTransacao, valor: e.target.value})}
+                      className="px-3 py-2 border rounded"
+                    />
+                    <select
+                      value={novaTransacao.tipo}
+                      onChange={e => setNovaTransacao({...novaTransacao, tipo: e.target.value})}
+                      className="px-3 py-2 border rounded"
+                    >
+                      <option value="entrada">Entrada</option>
+                      <option value="saída">Saída</option>
+                    </select>
+                    <button
+                      onClick={adicionarTransacao}
+                      className="bg-blue-600 text-white px-4 py-2 rounded flex items-center justify-center gap-2"
+                    >
+                      <Plus size={20} /> Adicionar
+                    </button>
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-h-96 overflow-y-auto">
+                  {transacoes.length === 0 ? (
+                    <p className="text-center text-gray-500 py-8">Nenhuma transação registrada.</p>
+                  ) : (
+                    transacoes.map(t => (
+                      <div
+                        key={t.id}
+                        className={`p-3 rounded-lg flex justify-between items-center ${
+                          t.tipo === 'entrada' ? 'bg-green-50' : 'bg-red-50'
+                        }`}
+                      >
+                        <div>
+                          <p className="font-semibold text-sm">{t.nome}</p>
+                          <p className="text-xs text-gray-600">
+                            {new Date(t.data).toLocaleString('pt-BR')}
+                          </p>
+                        </div>
+                        <p className={`font-bold ${t.tipo === 'entrada' ? 'text-green-600' : 'text-red-600'}`}>
+                          {t.tipo === 'entrada' ? '+' : '-'} R$ {t.valor.toFixed(2).replace('.', ',')}
+                        </p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+
             {activeTab === 'historico' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4">Histórico</h2>
@@ -478,7 +571,6 @@ const ReformaDoTemplo = () => {
   );
 };
 
-// === HISTÓRICO COM MÉDIAS ===
 const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
   const [medias, setMedias] = useState({ body: 0, spirit: 0, soul: 0 });
   const [loading, setLoading] = useState(true);
