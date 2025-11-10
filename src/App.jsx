@@ -398,23 +398,36 @@ const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
   }, [data]);
 
   return (
-    <div
-      onClick={() => { setSelectedDate(data); setActiveTab('corpo'); }}
-      className="p-4 bg-white border rounded-lg cursor-pointer hover:shadow transition-shadow"
-    >
-      <div className="flex justify-between items-center">
-        <p className="font-semibold text-gray-800">
-          {new Date(data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}
-        </p>
-        {loading ? (
-          <p className="text-xs text-gray-400">Carregando...</p>
-        ) : (
-          <div className="flex gap-3 text-sm font-bold">
-            <span className="text-green-600">C: {medias.body}</span>
-            <span className="text-purple-600">E: {medias.spirit}</span>
-            <span className="text-yellow-600">A: {medias.soul}</span>
-          </div>
-        )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
+      <div className="max-w-4xl mx-auto">
+        <header className="text-center mb-8 pt-6">
+          <h1 className="text-4xl font-bold text-gray-800 mb-2">Reforma do Templo</h1>
+          <p className="text-gray-600 italic">Apresenteis o vosso corpo em sacrifício vivo - Romanos 12:1</p>
+        </header>
+
+        {/* TESTE FINAL: ABA DECISÃO FORÇADA */}
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-3xl font-bold mb-6 text-red-600">
+            TESTE FINAL: ABA DECISÃO
+          </h2>
+          
+          <p className="text-lg font-bold text-green-600 mb-4">
+            SE VOCÊ VÊ ISSO, O APP ESTÁ FUNCIONANDO!
+          </p>
+
+          <textarea
+            placeholder="Digite aqui qualquer coisa..."
+            className="w-full p-4 border-2 border-blue-300 rounded-lg text-lg h-32 mb-4"
+          />
+
+          <button className="w-full bg-blue-600 text-white py-4 rounded-lg text-xl font-bold hover:bg-blue-700">
+            Botão de Teste
+          </button>
+
+          <p className="mt-6 text-sm text-gray-600">
+            Se você vê este texto, o React está funcionando perfeitamente.
+          </p>
+        </div>
       </div>
     </div>
   );
