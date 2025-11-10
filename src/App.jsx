@@ -246,6 +246,7 @@ const ReformaDoTemplo = () => {
               { id: 'espirito', icon: Sparkles, label: 'Espírito' },
               { id: 'alma', icon: Brain, label: 'Alma' },
               { id: 'decisao', icon: Scroll, label: 'Decisão' },
+              { id: 'decisoes', label: 'Decisões Salvas' },
               { id: 'historico', label: 'Histórico' }
             ].map(tab => (
               <button
@@ -320,12 +321,36 @@ const ReformaDoTemplo = () => {
 
             {/* ABA DECISÃO */}
             {activeTab === 'decisao' && (
-  <GuiaDecisaoCompleto
-    decisionData={decisionData}
-    setDecisionData={setDecisionData}
-    salvarDecisao={salvarDecisão}
-  />
-)}
+              <GuiaDecisaoCompleto
+                decisionData={decisionData}
+                setDecisionData={setDecisionData}
+                salvarDecisao={salvarDecisão}
+              />
+            )}
+
+            {/* ABA DECISÕES SALVAS */}
+            {activeTab === 'decisoes' && (
+              <div className="space-y-4">
+                <h2 className="text-2xl font-bold mb-4">Decisões Salvas</h2>
+                {decisoesSalvas.length === 0 ? (
+                  <p className="text-center text-gray-500 py-8">Nenhuma decisão salva ainda.</p>
+                ) : (
+                  <div className="space-y-3">
+                    {decisoesSalvas.map(dec => (
+                      <div key={dec.id} className="bg-white p-4 rounded-lg shadow-sm border">
+                        <p className="font-semibold text-sm text-gray-700">{dec.description}</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {new Date(dec.dataHora).toLocaleString('pt-BR')}
+                        </p>
+                        <p className="text-xs mt-2">
+                          SIM: {Object.values(dec).reduce((a, v) => a + (Array.isArray(v) ? v.filter(Boolean).length : 0), 0)} respostas
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* ABA HISTÓRICO */}
             {activeTab === 'historico' && (
