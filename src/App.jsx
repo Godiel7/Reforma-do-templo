@@ -12,20 +12,44 @@ const ReformaDoTemplo = () => {
   const [decisoesSalvas, setDecisoesSalvas] = useState([]);
 
   const [bodyMetrics, setBodyMetrics] = useState({
-    energia: 5, qualidadeSono: 5, alimentacao: 5, hidratacao: 5,
-    frequenciaExercicios: 5, cumprimentoRotina: 5, resistenciaFadiga: 5,
-    forca: 5, flexibilidade: 5, coordenacao: 5, percepcao: 5,
-    resistenciaExcessos: 5, persistencia: 5, capacidadeDizerNao: 5
+    energia: 5,
+    qualidadeSono: 5,
+    alimentação: 5,
+    hidratação: 5,
+    frequênciaExercícios: 5,
+    cumprimentoRotina: 5,
+    resistênciaFadiga: 5,
+    força: 5,
+    flexibilidade: 5,
+    coordenação: 5,
+    percepção: 5,
+    resistênciaExcessos: 5,
+    persistência: 5,
+    capacidadeDizerNão: 5
   });
 
   const [spiritMetrics, setSpiritMetrics] = useState({
-    amor: 5, alegria: 5, paz: 5, paciencia: 5, fidelidade: 5,
-    mansidao: 5, bondade: 5, benignidade: 5, dominioProprio: 5
+    amor: 5,
+    alegria: 5,
+    paz: 5,
+    paciência: 5,
+    fidelidade: 5,
+    mansidão: 5,
+    bondade: 5,
+    benignidade: 5,
+    domínioPróprio: 5
   });
 
   const [soulMetrics, setSoulMetrics] = useState({
-    alegria: 5, esperanca: 5, confianca: 5, serenidade: 5,
-    ansiedade: 5, medo: 5, raiva: 5, tristeza: 5, tedio: 5
+    alegria: 5,
+    esperança: 5,
+    confiança: 5,
+    serenidade: 5,
+    ansiedade: 5,
+    medo: 5,
+    raiva: 5,
+    tristeza: 5,
+    tédio: 5
   });
 
   const [decisionData, setDecisionData] = useState({
@@ -35,7 +59,7 @@ const ReformaDoTemplo = () => {
     generosidade: [false, false, false],
     testemunho: [false, false, false],
     eternidade: [false, false, false],
-    anotacoes: ['', '', '', '', '']
+    anotações: ['', '', '', '', '']
   });
 
   const storage = {
@@ -53,11 +77,11 @@ const ReformaDoTemplo = () => {
   }, [selectedDate]);
 
   useEffect(() => {
-    carregarHistorico();
-    carregarDecisoes();
+    carregarHistórico();
+    carregarDecisões();
   }, []);
 
-  const carregarDecisoes = async () => {
+  const carregarDecisões = async () => {
     try {
       const result = await storage.get('decisoes-lista');
       if (result && result.value) {
@@ -66,7 +90,7 @@ const ReformaDoTemplo = () => {
     } catch (e) {}
   };
 
-  const carregarHistorico = async () => {
+  const carregarHistórico = async () => {
     try {
       const result = await storage.get('historico-datas');
       if (result && result.value) {
@@ -118,7 +142,7 @@ const ReformaDoTemplo = () => {
     }
   };
 
-  const salvarDecisao = async () => {
+  const salvarDecisão = async () => {
     if (!decisionData.description.trim()) {
       showToast('Descreva a decisão', 'error');
       return;
@@ -142,7 +166,7 @@ const ReformaDoTemplo = () => {
       generosidade: [false, false, false],
       testemunho: [false, false, false],
       eternidade: [false, false, false],
-      anotacoes: ['', '', '', '', '']
+      anotações: ['', '', '', '', '']
     });
 
     showToast('Decisão salva!', 'success');
@@ -158,14 +182,14 @@ const ReformaDoTemplo = () => {
 
   const addRoutineItem = () => {
     if (newRoutine.hora && newRoutine.atividade) {
-      const item = { ...newRoutine, id: Date.now(), concluida: false };
+      const item = { ...newRoutine, id: Date.now(), concluída: false };
       setRoutineItems(prev => [...prev, item].sort((a,b) => a.hora.localeCompare(b.hora)));
       setNewRoutine({ hora: '', atividade: '', tipo: 'devocional' });
     }
   };
 
   const toggleRoutineItem = (id) => {
-    setRoutineItems(prev => prev.map(i => i.id === id ? { ...i, concluida: !i.concluida } : i));
+    setRoutineItems(prev => prev.map(i => i.id === id ? { ...i, concluída: !i.concluída } : i));
   };
 
   const removeRoutineItem = (id) => {
@@ -179,10 +203,10 @@ const ReformaDoTemplo = () => {
 
   const tipoColors = {
     devocional: 'bg-purple-100 text-purple-800',
-    fisico: 'bg-green-100 text-green-800',
+    físico: 'bg-green-100 text-green-800',
     trabalho: 'bg-blue-100 text-blue-800',
     estudo: 'bg-yellow-100 text-yellow-800',
-    alimentacao: 'bg-orange-100 text-orange-800',
+    alimentação: 'bg-orange-100 text-orange-800',
     entretenimento: 'bg-pink-100 text-pink-800',
     outro: 'bg-gray-100 text-gray-800'
   };
@@ -246,9 +270,9 @@ const ReformaDoTemplo = () => {
                 <div className="space-y-2">
                   {routineItems.map(item => (
                     <div key={item.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <input type="checkbox" checked={item.concluida} onChange={() => toggleRoutineItem(item.id)} className="w-5 h-5" />
+                      <input type="checkbox" checked={item.concluída} onChange={() => toggleRoutineItem(item.id)} className="w-5 h-5" />
                       <span className="font-mono text-sm w-16">{item.hora}</span>
-                      <span className={item.concluida ? 'line-through text-gray-500 flex-1' : 'flex-1'}>{item.atividade}</span>
+                      <span className={item.concluída ? 'line-through text-gray-500 flex-1' : 'flex-1'}>{item.atividade}</span>
                       <span className={'px-2 py-1 rounded text-xs ' + tipoColors[item.tipo]}>{item.tipo}</span>
                       <button onClick={() => removeRoutineItem(item.id)} className="text-red-500 text-sm">Remover</button>
                     </div>
@@ -291,7 +315,7 @@ const ReformaDoTemplo = () => {
               <GuiaDecisao
                 decisionData={decisionData}
                 setDecisionData={setDecisionData}
-                salvarDecisao={salvarDecisao}
+                salvarDecisão={salvarDecisão}
               />
             )}
 
