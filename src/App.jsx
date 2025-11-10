@@ -7,7 +7,7 @@ const ReformaDoTemplo = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [routineItems, setRoutineItems] = useState([]);
   const [newRoutine, setNewRoutine] = useState({ hora: '', atividade: '', tipo: 'devocional' });
-gaan  const [historicoDatas, setHistoricoDatas] = useState([]);
+  const [historicoDatas, setHistoricoDatas] = useState([]);
   const [toast, setToast] = useState(null);
 
   const [bodyMetrics, setBodyMetrics] = useState({
@@ -453,7 +453,7 @@ gaan  const [historicoDatas, setHistoricoDatas] = useState([]);
                           {dec.anotações.some(a => a.trim()) && (
                             <div className="mt-3 p-2 bg-gray-50 rounded text-xs">
                               <p className="font-semibold">Anotações:</p>
-                              {dec.anotações.filter(a => a.trim()).map((a, i) => (
+                              {dec.anotaÇÕES.filter(a => a.trim()).map((a, i) => (
                                 <p key={i} className="mt-1">• {a}</p>
                               ))}
                             </div>
