@@ -73,18 +73,15 @@ const ReformaDoTemplo = () => {
     }
   };
 
-  // CARREGAR DADOS AO MUDAR DE DATA
   useEffect(() => {
     loadDataForDate(selectedDate);
   }, [selectedDate]);
 
-  // CARREGAR HISTÓRICO E DECISÕES SALVAS AO INICIAR
   useEffect(() => {
     carregarHistórico();
     carregarDecisoesSalvas();
   }, []);
 
-  // CARREGAR DECISÕES SALVAS
   const carregarDecisoesSalvas = async () => {
     try {
       const result = await storage.get('decisoes-lista');
@@ -218,6 +215,25 @@ const ReformaDoTemplo = () => {
     outro: 'bg-gray-100 text-gray-800'
   };
 
+  // === INTERPRETAÇÃO DAS RESPOSTAS ===
+  const interpretacao = (dec) => {
+    const totalSim = Object.values(dec).reduce((acc, v) => acc + (Array.isArray(v) ? v.filter(Boolean).length : 0), 0);
+    const totalPerguntas = 20; // 4 + 5 + 3 + 3 + 3 + 2 anotações
+
+    const naoImportante = [
+      ...dec.alinhamento.slice(0, 3),
+      ...dec.mordomia.slice(0, 4),
+      ...dec.eternidade
+    ].some(v => !v);
+
+    const poucosSim = totalSim < totalPerguntas * 0.7;
+
+    if (totalSim === 20) return { icon: 'All Yes', text: 'Gasto prudente e pode glorificar a Deus.' };
+    if (naoImportante) return { icon: 'Warning', text: 'Qualquer “NÃO” importante → espere, ore e reavalie.' };
+    if (poucosSim) return { icon: 'Cross', text: 'Muitos “NÃO” → provável sinal de impulsividade.' };
+    return { icon: 'All Yes', text: 'Maioria “SIM” → decisão alinhada com a fé.' };
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 p-4">
       {toast && (
@@ -342,18 +358,91 @@ const ReformaDoTemplo = () => {
                 {decisoesSalvas.length === 0 ? (
                   <p className="text-center text-gray-500 py-8">Nenhuma decisão salva ainda.</p>
                 ) : (
-                  <div className="space-y-3">
-                    {decisoesSalvas.map(dec => (
-                      <div key={dec.id} className="bg-white p-4 rounded-lg shadow-sm border">
-                        <p className="font-semibold text-sm text-gray-700">{dec.description}</p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {new Date(dec.dataHora).toLocaleString('pt-BR')}
-                        </p>
-                        <p className="text-xs mt-2">
-                          SIM: {Object.values(dec).reduce((a, v) => a + (Array.isArray(v) ? v.filter(Boolean).length : 0), 0)} respostas
-                        </p>
-                      </div>
-                    ))}
+                  <div className="space-y-4">
+                    {decisoesSalvas.map(dec => {
+                      const interp = interpretacao(dec);
+                      return (
+                        <div key={dec.id} className="bg-white p-5 rounded-lg shadow-md border">
+                          <div className="flex justify-between items-start mb-2">
+                            <p className="font-bold text-lg text-gray-800">{dec.description}</p>
+                            <span className="text-xs text-gray-500">
+                              {new Date(dec.dataHora).toLocaleString('pt-BR')}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                            <div>
+                              <p className="font-semibold text-green-700">Alinhamento ({dec.alinhamento.filter(Boolean).length}/4)</p>
+                              <ul className="list-disc list-inside text-gray-600">
+                                {['Oração?', 'Glorifica?', 'Gratidão?', 'Satisfeito em Cristo?'].map((q, i) => (
+                                  <li key={i} className={dec.alinhamento[i] ? 'text-green-600' : 'text-red-500'}>
+                                    {q} {dec.alinhamento[i] ? 'Yes' : 'No'}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-blue-700">Mordomia ({dec.mordomia.filter(Boolean).length}/5)</p>
+                              <ul className="list-disc list-inside text-gray-600">
+                                {['Provisão?', 'Dízimo?', 'Sem dívida?', 'Prudente?', 'Testemunho?'].map((q, i) => (
+                                  <li key={i} className={dec.mordomia[i] ? 'text-green-600' : 'text-red-500'}>
+                                    {q} {dec.mordomia[i] ? 'Yes' : 'No'}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-purple-700">Generosidade ({dec.generosidade.filter(Boolean).length}/3)</p>
+                              <ul className="list-disc list-inside text-gray-600">
+                                {['Ajuda?', 'Generoso?', 'Necessidade?'].map((q, i) => (
+                                  <li key={i} className={dec.generosidade[i] ? 'text-green-600' : 'text-red-500'}>
+                                    {q} {dec.generosidade[i] ? 'Yes' : 'No'}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-orange-700">Testemunho ({dec.testemunho.filter(Boolean).length}/3)</p>
+                              <ul className="list-disc list-inside text-gray-600">
+                                {['Servir?', 'Necessidade?', 'Contentamento?'].map((q, i) => (
+                                  <li key={i} className={dec.testemunho[i] ? 'text-green-600' : 'text-red-500'}>
+                                    {q} {dec.testemunho[i] ? 'Yes' : 'No'}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+
+                            <div>
+                              <p className="font-semibold text-yellow-700">Eternidade ({dec.eternidade.filter(Boolean).length}/3)</p>
+                              <ul className="list-disc list-inside text-gray-600">
+                                {['Valor espiritual?', 'Vergonha?', 'Agradecer?'].map((q, i) => (
+                                  <li key={i} className={dec.eternidade[i] ? 'text-green-600' : 'text-red-500'}>
+                                    {q} {dec.eternidade[i] ? 'Yes' : 'No'}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+
+                          {dec.anotações.some(a => a.trim()) && (
+                            <div className="mt-3 p-2 bg-gray-50 rounded text-xs">
+                              <p className="font-semibold">Anotações:</p>
+                              {dec.anotações.filter(a => a.trim()).map((a, i) => (
+                                <p key={i} className="mt-1">• {a}</p>
+                              ))}
+                            </div>
+                          )}
+
+                          <div className="mt-3 p-2 bg-blue-50 rounded flex items-center gap-2">
+                            <span className="text-xl">{interp.icon}</span>
+                            <p className="font-semibold text-sm">{interp.text}</p>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
