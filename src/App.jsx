@@ -143,7 +143,7 @@ const ReformaDoTemplo = () => {
     }
   };
 
-  const salvarDecisão = async () => {
+  const salvarDecisao = async () => {
     if (!decisionData.description.trim()) {
       showToast('Descreva a decisão', 'error');
       return;
@@ -260,7 +260,6 @@ const ReformaDoTemplo = () => {
           </div>
 
           <div className="p-6">
-            {/* ABA ROTINA */}
             {activeTab === 'rotina' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4">Rotina Diária</h2>
@@ -288,7 +287,6 @@ const ReformaDoTemplo = () => {
               </div>
             )}
 
-            {/* ABA CORPO / ESPÍRITO / ALMA */}
             {['corpo', 'espirito', 'alma'].includes(activeTab) && (
               <div>
                 <h2 className="text-2xl font-bold mb-4">
@@ -319,16 +317,14 @@ const ReformaDoTemplo = () => {
               </div>
             )}
 
-            {/* ABA DECISÃO */}
             {activeTab === 'decisao' && (
               <GuiaDecisaoCompleto
                 decisionData={decisionData}
                 setDecisionData={setDecisionData}
-                salvarDecisao={salvarDecisão}
+                salvarDecisao={salvarDecisao}
               />
             )}
 
-            {/* ABA DECISÕES SALVAS */}
             {activeTab === 'decisoes' && (
               <div className="space-y-4">
                 <h2 className="text-2xl font-bold mb-4">Decisões Salvas</h2>
@@ -352,7 +348,6 @@ const ReformaDoTemplo = () => {
               </div>
             )}
 
-            {/* ABA HISTÓRICO */}
             {activeTab === 'historico' && (
               <div>
                 <h2 className="text-2xl font-bold mb-4">Histórico</h2>
@@ -361,15 +356,12 @@ const ReformaDoTemplo = () => {
                 ) : (
                   <div className="space-y-3">
                     {historicoDatas.map(data => (
-                      <div
+                      <ListaHistorico
                         key={data}
-                        onClick={() => { setSelectedDate(data); setActiveTab('corpo'); }}
-                        className="p-4 bg-white border rounded-lg cursor-pointer hover:shadow transition-shadow"
-                      >
-                        <p className="font-semibold text-gray-800">
-                          {new Date(data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}
-                        </p>
-                      </div>
+                        data={data}
+                        setSelectedDate={setSelectedDate}
+                        setActiveTab={setActiveTab}
+                      />
                     ))}
                   </div>
                 )}
@@ -386,4 +378,23 @@ const ReformaDoTemplo = () => {
   );
 };
 
-export default ReformaDoTemplo;
+// === COMPONENTE LISTA HISTÓRICO COM MÉDIAS ===
+const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
+  const [medias, setMedias] = useState({ body: 0, spirit: 0, soul: 0 });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const load = async () => {
+      const get = (k) => localStorage.getItem(k + '-' + data);
+      const [b, s, a] = await Promise.all(['body', 'spirit', 'soul'].map(get));
+      
+      const calc = (val) => {
+        if (!val) return 0;
+        try {
+          const obj = JSON.parse(val);
+          const nums = Object.values(obj).filter(n => typeof n === 'number');
+          return nums.length ? (nums.reduce((a, b) => a + b, 0) / nums.length).toFixed(1) : 0;
+        } catch { return 0; }
+      };
+
+      setMedias({ body: calc(b), spirit: calc(s), soul: calc(a
