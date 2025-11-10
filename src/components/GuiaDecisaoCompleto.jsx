@@ -17,7 +17,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
   const sections = [
     {
       title: 'Alinhamento Espiritual',
-      icon: '🕊️',
+      icon: 'Pigeon',
       items: [
         'Busquei a direção de Deus em oração antes de decidir sobre esse gasto?',
         'Essa decisão glorifica a Deus e reflete um coração submisso a Ele?',
@@ -28,7 +28,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
     },
     {
       title: 'Princípios de Mordomia e Provisão',
-      icon: '💰',
+      icon: 'Money',
       items: [
         'Esse gasto mantém a provisão necessária para minha família?',
         'Já separei fielmente o dízimo e as ofertas antes dessa decisão?',
@@ -40,7 +40,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
     },
     {
       title: 'Amor ao Próximo e Generosidade',
-      icon: '🤝',
+      icon: 'Handshake',
       items: [
         'Esse gasto não me impede de ajudar alguém necessitado se Deus abrir essa oportunidade?',
         'Tenho sido generoso recentemente e mantenho meu coração aberto para repartir?',
@@ -50,7 +50,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
     },
     {
       title: 'Testemunho e Contentamento',
-      icon: '⚖️',
+      icon: 'Scale',
       items: [
         'O motivo real desse gasto é servir, e não ostentar ou buscar aprovação?',
         'Estou comprando por real necessidade, e não por comparação com outros?',
@@ -60,7 +60,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
     },
     {
       title: 'Eternidade e Propósito',
-      icon: '📈',
+      icon: 'Trending Up',
       items: [
         'Esse gasto tem algum valor espiritual ou contribui, direta ou indiretamente, para o Reino de Deus?',
         'Se Cristo voltasse hoje, eu não me envergonharia dessa escolha?',
@@ -87,10 +87,10 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
 
     const poucosSim = totalSim < totalPerguntas * 0.7;
 
-    if (totalSim === totalPerguntas) return { icon: '✅', text: 'Gasto prudente e pode glorificar a Deus.' };
-    if (naoImportante) return { icon: '⚠️', text: 'Qualquer “NÃO” importante → espere, ore e reavalie.' };
-    if (poucosSim) return { icon: '❌', text: 'Muitos “NÃO” → provável sinal de impulsividade ou falta de propósito.' };
-    return { icon: '✅', text: 'Maioria “SIM” → decisão alinhada com a fé.' Km
+    if (totalSim === totalPerguntas) return { icon: 'All Yes', text: 'Gasto prudente e pode glorificar a Deus.' };
+    if (naoImportante) return { icon: 'Warning', text: 'Qualquer “NÃO” importante → espere, ore e reavalie.' };
+    if (poucosSim) return { icon: 'Cross', text: 'Muitos “NÃO” → provável sinal de impulsividade ou falta de propósito.' };
+    return { icon: 'All Yes', text: 'Maioria “SIM” → decisão alinhada com a fé.' };
   };
 
   return (
@@ -151,7 +151,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
       ))}
 
       <div className="bg-blue-50 p-4 rounded-lg">
-        <h3 className="font-bold text-lg mb-2">📊 Interpretação</h3>
+        <h3 className="font-bold text-lg mb-2">Interpretação</h3>
         <p className="text-sm flex items-center gap-2">
           <span className="text-xl">{interpretacao().icon}</span>
           <span>{interpretacao().text}</span>
