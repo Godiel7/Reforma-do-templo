@@ -16,91 +16,125 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
 
   const sections = [
     {
-      title: 'Alinhamento com a Vontade de Deus',
+      title: 'Alinhamento Espiritual',
+      icon: '🕊️',
       items: [
-        'Está de acordo com a Bíblia?',
-        'Edifica minha fé?',
-        'Me aproxima de Deus?',
-        'Glorifica a Deus?'
+        'Busquei a direção de Deus em oração antes de decidir sobre esse gasto?',
+        'Essa decisão glorifica a Deus e reflete um coração submisso a Ele?',
+        'Esse gasto expressa gratidão e contentamento, e não ganância ou ansiedade?',
+        'Se eu perdesse esse bem amanhã, ainda estaria satisfeito em Cristo?'
       ],
       category: 'alinhamento'
     },
     {
-      title: 'Mordomia do Corpo',
+      title: 'Princípios de Mordomia e Provisão',
+      icon: '💰',
       items: [
-        'Afeta minha saúde física?',
-        'Afeta meu sono?',
-        'Afeta minha energia?',
-        'Afeta minha aparência?',
-        'Afeta minha disciplina?'
+        'Esse gasto mantém a provisão necessária para minha família?',
+        'Já separei fielmente o dízimo e as ofertas antes dessa decisão?',
+        'Tenho recursos suficientes para isso sem precisar me endividar?',
+        'Estou sendo prudente e racional, e não guiado apenas pela emoção?',
+        'Se todos os irmãos da igreja gastassem assim, o testemunho cristão seria fortalecido?'
       ],
       category: 'mordomia'
     },
     {
-      title: 'Generosidade e Finanças',
+      title: 'Amor ao Próximo e Generosidade',
+      icon: '🤝',
       items: [
-        'Gasto dinheiro com isso?',
-        'Poderia usar esse recurso para o Reino?',
-        'É um bom investimento eterno?'
+        'Esse gasto não me impede de ajudar alguém necessitado se Deus abrir essa oportunidade?',
+        'Tenho sido generoso recentemente e mantenho meu coração aberto para repartir?',
+        'Há alguém próximo com necessidade maior que eu poderia atender antes dessa compra?'
       ],
       category: 'generosidade'
     },
     {
-      title: 'Testemunho e Relacionamentos',
+      title: 'Testemunho e Contentamento',
+      icon: '⚖️',
       items: [
-        'Meus irmãos em Cristo aprovariam?',
-        'Minha família aprovaria?',
-        'Dá bom testemunho?'
+        'O motivo real desse gasto é servir, e não ostentar ou buscar aprovação?',
+        'Estou comprando por real necessidade, e não por comparação com outros?',
+        'Essa decisão fortalece meu contentamento em Cristo, e não alimenta minha cobiça?'
       ],
       category: 'testemunho'
     },
     {
-      title: 'Foco na Eternidade',
+      title: 'Eternidade e Propósito',
+      icon: '📈',
       items: [
-        'Vale a pena no céu?',
-        'Me distrai do essencial?',
-        'Me ajuda a crescer espiritualmente?'
+        'Esse gasto tem algum valor espiritual ou contribui, direta ou indiretamente, para o Reino de Deus?',
+        'Se Cristo voltasse hoje, eu não me envergonharia dessa escolha?',
+        'Posso agradecer a Deus por isso com alegria sincera e consciência tranquila?'
       ],
       category: 'eternidade'
     }
   ];
 
+  // Contar SIMs
+  const totalSim = Object.values(decisionData).reduce((acc, arr) => {
+    if (Array.isArray(arr)) return acc + arr.filter(Boolean).length;
+    return acc;
+  }, 0);
+
+  const totalPerguntas = sections.reduce((acc, s) => acc + s.items.length, 0);
+
+  const interpretacao = () => {
+    const naoImportante = [
+      ...decisionData.alinhamento.slice(0, 3),
+      ...decisionData.mordomia.slice(0, 4),
+      ...decisionData.eternidade
+    ].some(v => !v);
+
+    const poucosSim = totalSim < totalPerguntas * 0.7;
+
+    if (totalSim === totalPerguntas) return { icon: '✅', text: 'Gasto prudente e pode glorificar a Deus.' };
+    if (naoImportante) return { icon: '⚠️', text: 'Qualquer “NÃO” importante → espere, ore e reavalie.' };
+    if (poucosSim) return { icon: '❌', text: 'Muitos “NÃO” → provável sinal de impulsividade ou falta de propósito.' };
+    return { icon: '✅', text: 'Maioria “SIM” → decisão alinhada com a fé.' Km
+  };
+
   return (
     <div className="space-y-6">
-      <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-        <Scroll size={28} className="text-blue-600" />
-        Guia de Decisão Cristã
+      <h2 className="text-2xl font-bold mb-2 text-blue-700">
+        GUIA DE DECISÃO CRISTÃ SOBRE GASTOS
       </h2>
+      <p className="text-xs text-gray-600 mb-4">
+        Base: Lucas 12:33–34, 1Tm 6:6–10, Tg 4:13–17, Pv 3:9
+      </p>
 
       <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Descreva a decisão:</label>
+        <label className="block text-sm font-medium mb-2">Descreva o gasto/decisão:</label>
         <textarea
           value={decisionData.description}
           onChange={e => setDecisionData({ ...decisionData, description: e.target.value })}
-          placeholder="Ex: Comprar um celular novo..."
-          className="w-full p-3 border rounded-lg resize-none h-24"
+          placeholder="Ex: Comprar um celular novo, sair para jantar..."
+          className="w-full p-3 border rounded-lg resize-none h-20 text-sm"
         />
       </div>
 
       {sections.map((section, secIdx) => (
         <div key={secIdx} className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-semibold text-lg mb-3 text-gray-800">{section.title}</h3>
-          <div className="space-y-2">
+          <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+            <span>{section.icon}</span> {section.title}
+          </h3>
+          <div className="space-y-3">
             {section.items.map((item, idx) => (
-              <label key={idx} className="flex items-center gap-3 cursive-pointer select-none">
-                {decisionData[section.category][idx] ? (
-                  <CheckSquare size={20} className="text-green-600" />
-                ) : (
-                  <Square size={18} className="text-gray-400" />
-                )}
-                <input
-                  type="checkbox"
-                  checked={decisionData[section.category][idx]}
-                  onChange={() => toggleCheckbox(section.category, idx)}
-                  className="hidden"
-                />
-                <span className="text-sm">{item}</span>
-              </label>
+              <div key={idx} className="flex items-start gap-3">
+                <label className="flex items-center gap-2 cursor-pointer flex-1">
+                  {decisionData[section.category][idx] ? (
+                    <CheckSquare size={18} className="text-green-600" />
+                  ) : (
+                    <Square size={18} className="text-gray-400" />
+                  )}
+                  <input
+                    type="checkbox"
+                    checked={decisionData[section.category][idx]}
+                    onChange={() => toggleCheckbox(section.category, idx)}
+                    className="hidden"
+                  />
+                  <span className="text-xs">{item}</span>
+                </label>
+              </div>
             ))}
           </div>
           {secIdx < sections.length - 1 && (
@@ -115,6 +149,17 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
           )}
         </div>
       ))}
+
+      <div className="bg-blue-50 p-4 rounded-lg">
+        <h3 className="font-bold text-lg mb-2">📊 Interpretação</h3>
+        <p className="text-sm flex items-center gap-2">
+          <span className="text-xl">{interpretacao().icon}</span>
+          <span>{interpretacao().text}</span>
+        </p>
+        <p className="text-xs text-gray-600 mt-1">
+          {totalSim} de {totalPerguntas} respostas SIM
+        </p>
+      </div>
 
       <button
         onClick={salvarDecisao}
