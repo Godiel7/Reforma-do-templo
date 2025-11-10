@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckSquare, Square, Scroll } from 'lucide-react';
+import { CheckSquare, Square, Scroll, Save } from 'lucide-react';
 
 const GuiaDecisao = ({ decisionData, setDecisionData, salvarDecisao }) => {
   const toggleCheckbox = (category, index) => {
@@ -87,7 +87,7 @@ const GuiaDecisao = ({ decisionData, setDecisionData, salvarDecisao }) => {
           <h3 className="font-semibold text-lg mb-3 text-gray-800">{section.title}</h3>
           <div className="space-y-2">
             {section.items.map((item, idx) => (
-              <label key={idx} className="flex items-center gap-3 cursor-pointer">
+              <label key={idx} className="flex items-center gap-3 cursor-pointer select-none">
                 {decisionData[section.category][idx] ? (
                   <CheckSquare size={20} className="text-green-600" />
                 ) : (
