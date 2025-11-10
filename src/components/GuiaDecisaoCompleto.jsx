@@ -16,8 +16,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
 
   const sections = [
     {
-      title: 'Alinhamento Espiritual',
-      icon: 'Pigeon',
+      title: '1. Alinhamento Espiritual',
       items: [
         'Busquei a direção de Deus em oração antes de decidir sobre esse gasto?',
         'Essa decisão glorifica a Deus e reflete um coração submisso a Ele?',
@@ -27,20 +26,18 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
       category: 'alinhamento'
     },
     {
-      title: 'Princípios de Mordomia e Provisão',
-      icon: 'Money',
+      title: '2. Princípios de Mordomia e Provisão',
       items: [
         'Esse gasto mantém a provisão necessária para minha família?',
         'Já separei fielmente o dízimo e as ofertas antes dessa decisão?',
         'Tenho recursos suficientes para isso sem precisar me endividar?',
         'Estou sendo prudente e racional, e não guiado apenas pela emoção?',
-        'Se todos os irmãos da igreja gastassem assim, o testemunho cristão seria fortalecido?'
+        'Se todos os irmãos da igreja gast1½ assim, o testemunho cristão seria fortalecido?'
       ],
       category: 'mordomia'
     },
     {
-      title: 'Amor ao Próximo e Generosidade',
-      icon: 'Handshake',
+      title: '3. Amor ao Próximo e Generosidade',
       items: [
         'Esse gasto não me impede de ajudar alguém necessitado se Deus abrir essa oportunidade?',
         'Tenho sido generoso recentemente e mantenho meu coração aberto para repartir?',
@@ -49,8 +46,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
       category: 'generosidade'
     },
     {
-      title: 'Testemunho e Contentamento',
-      icon: 'Scale',
+      title: '4. Testemunho e Contentamento',
       items: [
         'O motivo real desse gasto é servir, e não ostentar ou buscar aprovação?',
         'Estou comprando por real necessidade, e não por comparação com outros?',
@@ -59,8 +55,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
       category: 'testemunho'
     },
     {
-      title: 'Eternidade e Propósito',
-      icon: 'Trending Up',
+      title: '5. Eternidade e Propósito',
       items: [
         'Esse gasto tem algum valor espiritual ou contribui, direta ou indiretamente, para o Reino de Deus?',
         'Se Cristo voltasse hoje, eu não me envergonharia dessa escolha?',
@@ -96,7 +91,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
   return (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold mb-2 text-blue-700">
-        GUIA DE DECISÃO CRISTÃ SOBRE GASTOS
+        GUIA DE DECISÃO CRISTÃ SOBRE GASTOS E RECURSOS
       </h2>
       <p className="text-xs text-gray-600 mb-4">
         Base: Lucas 12:33–34, 1Tm 6:6–10, Tg 4:13–17, Pv 3:9
@@ -114,8 +109,8 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
 
       {sections.map((section, secIdx) => (
         <div key={secIdx} className="bg-gray-50 p-4 rounded-lg">
-          <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
-            <span>{section.icon}</span> {section.title}
+          <h3 className="font-bold text-lg mb-3 text-gray-800">
+            {section.title}
           </h3>
           <div className="space-y-3">
             {section.items.map((item, idx) => (
