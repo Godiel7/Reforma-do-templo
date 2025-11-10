@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, Heart, Brain, Sparkles, Plus, Save, ChevronLeft, ChevronRight, Scroll } from 'lucide-react';
-import GuiaDecisao from './components/GuiaDecisao';
+import GuiaDecisaoCompleto from './components/GuiaDecisaoCompleto';
 
 const ReformaDoTemplo = () => {
   const [activeTab, setActiveTab] = useState('rotina');
@@ -320,12 +320,12 @@ const ReformaDoTemplo = () => {
 
             {/* ABA DECISÃO */}
             {activeTab === 'decisao' && (
-              <GuiaDecisao
-                decisionData={decisionData}
-                setDecisionData={setDecisionData}
-                salvarDecisao={salvarDecisão}
-              />
-            )}
+  <GuiaDecisaoCompleto
+    decisionData={decisionData}
+    setDecisionData={setDecisionData}
+    salvarDecisao={salvarDecisão}
+  />
+)}
 
             {/* ABA HISTÓRICO */}
             {activeTab === 'historico' && (
