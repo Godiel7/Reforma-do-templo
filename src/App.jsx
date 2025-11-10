@@ -156,7 +156,7 @@ const ReformaDoTemplo = () => {
       ...decisionData
     };
 
-    const lista = [nova, ...decisoesSalvas];
+    const lista = [nova, ...dec:decisoesSalvas];
     await storage.set('decisoes-lista', JSON.stringify(lista));
     setDecisoesSalvas(lista);
 
@@ -207,7 +207,7 @@ const ReformaDoTemplo = () => {
     físico: 'bg-green-100 text-green-800',
     trabalho: 'bg-blue-100 text-blue-800',
     estudo: 'bg-yellow-100 text-yellow-800',
-    alimentação: 'bg-orange-100 text-orange-800',
+    alimentação: 'bg-orange-1 00 text-orange-800',
     entretenimento: 'bg-pink-100 text-pink-800',
     outro: 'bg-gray-100 text-gray-800'
   };
@@ -326,7 +326,7 @@ const ReformaDoTemplo = () => {
             )}
 
             {activeTab === 'decisoes' && (
-              <div className="space-y-4">
+              <div className="space-4">
                 <h2 className="text-2xl font-bold mb-4">Decisões Salvas</h2>
                 {decisoesSalvas.length === 0 ? (
                   <p className="text-center text-gray-500 py-8">Nenhuma decisão salva ainda.</p>
@@ -378,7 +378,7 @@ const ReformaDoTemplo = () => {
   );
 };
 
-// === COMPONENTE LISTA HISTÓRICO COM MÉDIAS ===
+// === COMPONENTE HISTÓRICO COM MÉDIAS (CORRIGIDO) ===
 const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
   const [medias, setMedias] = useState({ body: 0, spirit: 0, soul: 0 });
   const [loading, setLoading] = useState(true);
@@ -397,4 +397,33 @@ const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
         } catch { return 0; }
       };
 
-      setMedias({ body: calc(b), spirit: calc(s), soul: calc(a
+      setMedias({ body: calc(b), spirit: calc(s), soul: calc(a) });
+      setLoading(false);
+    };
+    load();
+  }, [data]);
+
+  return (
+    <div
+      onClick={() => { setSelectedDate(data); setActiveTab('corpo'); }}
+      className="p-4 bg-white border rounded-lg cursor-pointer hover:shadow transition-shadow"
+    >
+      <div className="flex justify-between items-center">
+        <p className="font-semibold text-gray-800">
+          {new Date(data).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short' })}
+        </p>
+        {loading ? (
+          <p className="text-xs text-gray-400">Carregando...</p>
+        ) : (
+          <div className="flex gap-3 text-sm font-bold">
+            <span className="text-green-600">C: {medias.body}</span>
+            <span className="text-purple-600">E: {medias.spirit}</span>
+            <span className="text-yellow-600">A: {medias.soul}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ReformaDoTemplo;
