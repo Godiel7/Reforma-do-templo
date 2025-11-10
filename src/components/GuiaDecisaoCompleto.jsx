@@ -32,7 +32,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
         'Já separei fielmente o dízimo e as ofertas antes dessa decisão?',
         'Tenho recursos suficientes para isso sem precisar me endividar?',
         'Estou sendo prudente e racional, e não guiado apenas pela emoção?',
-        'Se todos os irmãos da igreja gast1½ assim, o testemunho cristão seria fortalecido?'
+        'Se todos os irmãos da igreja gastassem assim, o testemunho cristão seria fortalecido?'
       ],
       category: 'mordomia'
     },
@@ -83,7 +83,7 @@ const GuiaDecisaoCompleto = ({ decisionData, setDecisionData, salvarDecisao }) =
     const poucosSim = totalSim < totalPerguntas * 0.7;
 
     if (totalSim === totalPerguntas) return { icon: 'All Yes', text: 'Gasto prudente e pode glorificar a Deus.' };
-    if (naoImportante) return { icon: 'Warning', text: 'Qualquer “NÃO” importante → espere, ore e reavalie.' };
+    if (naoImportante) return { text: 'Qualquer “NÃO” importante → espere, ore e reavalie.' };
     if (poucosSim) return { icon: 'Cross', text: 'Muitos “NÃO” → provável sinal de impulsividade ou falta de propósito.' };
     return { icon: 'All Yes', text: 'Maioria “SIM” → decisão alinhada com a fé.' };
   };
