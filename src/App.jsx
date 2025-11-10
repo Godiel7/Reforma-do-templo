@@ -73,22 +73,28 @@ const ReformaDoTemplo = () => {
     }
   };
 
+  // CARREGAR DADOS AO MUDAR DE DATA
   useEffect(() => {
     loadDataForDate(selectedDate);
   }, [selectedDate]);
 
+  // CARREGAR HISTÓRICO E DECISÕES SALVAS AO INICIAR
   useEffect(() => {
     carregarHistórico();
     carregarDecisoesSalvas();
   }, []);
 
+  // CARREGAR DECISÕES SALVAS
   const carregarDecisoesSalvas = async () => {
     try {
       const result = await storage.get('decisoes-lista');
       if (result && result.value) {
-        setDecisoesSalvas(JSON.parse(result.value));
+        const lista = JSON.parse(result.value);
+        setDecisoesSalvas(lista);
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Erro ao carregar decisões:', e);
+    }
   };
 
   const carregarHistórico = async () => {
@@ -255,6 +261,11 @@ const ReformaDoTemplo = () => {
                 className={`flex items-center gap-2 px-6 py-4 font-medium ${activeTab === tab.id ? 'border-b-2 border-blue-500 text-blue-600' : 'text-gray-500'}`}
               >
                 {tab.icon && <tab.icon size={20} />} {tab.label}
+                {tab.id === 'decisoes' && decisoesSalvas.length > 0 && (
+                  <span className="ml-1 bg-blue-600 text-white text-xs rounded-full px-2 py-0.5">
+                    {decisoesSalvas.length}
+                  </span>
+                )}
               </button>
             ))}
           </div>
@@ -327,7 +338,7 @@ const ReformaDoTemplo = () => {
 
             {activeTab === 'decisoes' && (
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold mb-4">Decisões Salvas</h2>
+                <h2 className="text-2xl font-bold mb-4">Decisões Salvas ({decisoesSalvas.length})</h2>
                 {decisoesSalvas.length === 0 ? (
                   <p className="text-center text-gray-500 py-8">Nenhuma decisão salva ainda.</p>
                 ) : (
@@ -378,7 +389,7 @@ const ReformaDoTemplo = () => {
   );
 };
 
-// === COMPONENTE HISTÓRICO COM MÉDIAS ===
+// === HISTÓRICO COM MÉDIAS ===
 const ListaHistorico = ({ data, setSelectedDate, setActiveTab }) => {
   const [medias, setMedias] = useState({ body: 0, spirit: 0, soul: 0 });
   const [loading, setLoading] = useState(true);
